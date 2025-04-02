@@ -20,7 +20,6 @@ public class UserClientService {
     }
 
     public RespondentUserDto fallbackGetUserDto(Long userId, Throwable throwable) {
-        log.error("UserClient 호출 실패 for userId {}: {}", userId, throwable.toString());
-        return new RespondentUserDto(userId, "Unknown User");
+        return new RespondentUserDto(userId, "Unknown User", "Unknown Role");
     }
 }
