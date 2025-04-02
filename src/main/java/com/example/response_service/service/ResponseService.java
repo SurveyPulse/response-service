@@ -66,7 +66,7 @@ public class ResponseService {
         Response response = responseRepository.findById(responseId)
                                               .orElseThrow(() -> new NotFoundException(ResponseExceptionType.RESPONSE_NOT_FOUND));
 
-        response.updateSubmittedAt(request.submittedAt());
+        response.updateSubmittedAt(LocalDateTime.now());
 
         answerRepository.deleteByResponseId(responseId);
         List<Answer> answers = request.answers().stream()
