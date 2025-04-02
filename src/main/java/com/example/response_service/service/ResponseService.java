@@ -1,8 +1,12 @@
 package com.example.response_service.service;
 
 import com.example.global.exception.type.NotFoundException;
+import com.example.response_service.client.service.SurveyClientService;
+import com.example.response_service.client.service.UserClientService;
 import com.example.response_service.dto.request.CreateResponseRequest;
 import com.example.response_service.dto.request.UpdateResponseRequest;
+import com.example.response_service.dto.response.QuestionWithSurveyDto;
+import com.example.response_service.dto.response.RespondentUserDto;
 import com.example.response_service.dto.response.ResponseDto;
 import com.example.response_service.entity.Answer;
 import com.example.response_service.entity.Response;
@@ -24,6 +28,8 @@ public class ResponseService {
 
     private final ResponseRepository responseRepository;
     private final AnswerRepository answerRepository;
+    private final UserClientService userClientService;
+    private final SurveyClientService surveyClientService;
 
     @Transactional
     public ResponseDto createResponse(CreateResponseRequest request) {
@@ -32,7 +38,6 @@ public class ResponseService {
                                     .respondentUserId(request.respondentUserId())
                                     .submittedAt(LocalDateTime.now())
                                     .build();
-
         responseRepository.save(response);
 
         List<Answer> answers = request.answers().stream()
@@ -44,7 +49,10 @@ public class ResponseService {
                                       .toList();
         answerRepository.saveAll(answers);
 
-        return ResponseDto.from(response, answers);
+        RespondentUserDto respondentUserDto = userClientService.getUserDto(request.respondentUserId());
+        List<QuestionWithSurveyDto> questionDtos = surveyClientService.getQuestionDtos(request.surveyId());
+
+        return ResponseDto.from(response, answers, respondentUserDto, questionDtos);
     }
 
     public List<ResponseDto> getResponsesBySurveyId(Long surveyId) {
@@ -57,7 +65,11 @@ public class ResponseService {
             if (answers.isEmpty()) {
                 throw new NotFoundException(AnswerExceptionType.ANSWER_NOT_FOUND);
             }
-            return ResponseDto.from(response, answers);
+
+            RespondentUserDto respondentUserDto = userClientService.getUserDto(response.getRespondentUserId());
+            List<QuestionWithSurveyDto> questionDtos = surveyClientService.getQuestionDtos(response.getSurveyId());
+
+            return ResponseDto.from(response, answers, respondentUserDto, questionDtos);
         }).toList();
     }
 
@@ -68,7 +80,11 @@ public class ResponseService {
         if (answers.isEmpty()) {
             throw new NotFoundException(AnswerExceptionType.ANSWER_NOT_FOUND);
         }
-        return ResponseDto.from(response, answers);
+
+        RespondentUserDto respondentUserDto = userClientService.getUserDto(response.getRespondentUserId());
+        List<QuestionWithSurveyDto> questionDtos = surveyClientService.getQuestionDtos(response.getSurveyId());
+
+        return ResponseDto.from(response, answers, respondentUserDto, questionDtos);
     }
 
     @Transactional
@@ -88,16 +104,17 @@ public class ResponseService {
                                       .toList();
         answerRepository.saveAll(answers);
 
-        return ResponseDto.from(response, answers);
+        RespondentUserDto respondentUserDto = userClientService.getUserDto(response.getRespondentUserId());
+        List<QuestionWithSurveyDto> questionDtos = surveyClientService.getQuestionDtos(response.getSurveyId());
+
+        return ResponseDto.from(response, answers, respondentUserDto, questionDtos);
     }
 
     @Transactional
     public void deleteResponse(Long responseId) {
         Response response = responseRepository.findById(responseId)
                                               .orElseThrow(() -> new NotFoundException(ResponseExceptionType.RESPONSE_NOT_FOUND));
-
         answerRepository.deleteByResponseId(responseId);
         responseRepository.deleteById(responseId);
     }
-
 }

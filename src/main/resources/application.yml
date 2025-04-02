@@ -42,3 +42,35 @@ spring:
   jwt:
     issuer: dsada
     secret: your-very-strong-secret-key-which-is-at-least-32-characters-long
+
+logging:
+  level:
+    com.example.response_service.client: DEBUG
+    feign.Logger: DEBUG
+
+feign:
+  survey-service-url: http://localhost:8083
+  user-service-url: http://localhost:8081
+
+  client:
+    config:
+      default:
+        loggerLevel: FULL
+
+resilience4j.circuitbreaker:
+  instances:
+    userService:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 5
+      permittedNumberOfCallsInHalfOpenState: 3
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10s
+    surveyService:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 5
+      permittedNumberOfCallsInHalfOpenState: 3
+      failureRateThreshold: 50
+      waitDurationInOpenState: 10s
+

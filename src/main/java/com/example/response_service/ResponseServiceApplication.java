@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 @EnableDiscoveryClient
 @EnableFeignClients
-@ComponentScan(basePackages = {"com.example.response_service", "com.example.global.exception"})
+@ComponentScan(basePackages = {"com.example.response_service", "com.example.global"})
 public class ResponseServiceApplication {
 
 	public static void main(String[] args) {

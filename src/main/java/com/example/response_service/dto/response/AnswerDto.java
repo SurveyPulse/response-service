@@ -4,13 +4,13 @@ import com.example.response_service.entity.Answer;
 
 public record AnswerDto(
         Long answerId,
-        Long questionId,
+        QuestionWithSurveyDto questionDto,
         String answerContent
 ) {
-    public static AnswerDto from(Answer answer) {
+    public static AnswerDto from(Answer answer, QuestionWithSurveyDto questionDto) {
         return new AnswerDto(
                 answer.getAnswerId(),
-                answer.getQuestionId(),
+                questionDto,
                 answer.getAnswerContent()
         );
     }
