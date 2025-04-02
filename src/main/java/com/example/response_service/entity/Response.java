@@ -34,4 +34,8 @@ public class Response extends BaseEntity {
         this.respondentUserId = respondentUserId;
         this.submittedAt = submittedAt;
     }
+
+    public void updateSubmittedAt(LocalDateTime submittedAt) {
+        this.submittedAt = submittedAt;
+    }
 }

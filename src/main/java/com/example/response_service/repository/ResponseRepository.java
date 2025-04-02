@@ -8,5 +8,5 @@ import java.util.List;
 public interface ResponseRepository extends JpaRepository<Response, Long> {
 
     List<Response> findBySurveyId(Long surveyId);
-    
+
 }
