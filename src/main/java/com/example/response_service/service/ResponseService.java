@@ -6,6 +6,7 @@ import com.example.response_service.dto.request.UpdateResponseRequest;
 import com.example.response_service.dto.response.ResponseDto;
 import com.example.response_service.entity.Answer;
 import com.example.response_service.entity.Response;
+import com.example.response_service.exception.AnswerExceptionType;
 import com.example.response_service.exception.ResponseExceptionType;
 import com.example.response_service.repository.AnswerRepository;
 import com.example.response_service.repository.ResponseRepository;
@@ -48,8 +49,14 @@ public class ResponseService {
 
     public List<ResponseDto> getResponsesBySurveyId(Long surveyId) {
         List<Response> responses = responseRepository.findBySurveyId(surveyId);
+        if (responses.isEmpty()) {
+            throw new NotFoundException(ResponseExceptionType.RESPONSE_NOT_FOUND);
+        }
         return responses.stream().map(response -> {
             List<Answer> answers = answerRepository.findByResponseId(response.getResponseId());
+            if (answers.isEmpty()) {
+                throw new NotFoundException(AnswerExceptionType.ANSWER_NOT_FOUND);
+            }
             return ResponseDto.from(response, answers);
         }).toList();
     }
@@ -58,6 +65,9 @@ public class ResponseService {
         Response response = responseRepository.findById(responseId)
                                               .orElseThrow(() -> new NotFoundException(ResponseExceptionType.RESPONSE_NOT_FOUND));
         List<Answer> answers = answerRepository.findByResponseId(response.getResponseId());
+        if (answers.isEmpty()) {
+            throw new NotFoundException(AnswerExceptionType.ANSWER_NOT_FOUND);
+        }
         return ResponseDto.from(response, answers);
     }
 
@@ -83,6 +93,9 @@ public class ResponseService {
 
     @Transactional
     public void deleteResponse(Long responseId) {
+        Response response = responseRepository.findById(responseId)
+                                              .orElseThrow(() -> new NotFoundException(ResponseExceptionType.RESPONSE_NOT_FOUND));
+
         answerRepository.deleteByResponseId(responseId);
         responseRepository.deleteById(responseId);
     }
