@@ -28,4 +28,10 @@ public class ResponseController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/{responseId}")
+    public ResponseEntity<ResponseDto> getResponse(@PathVariable Long responseId) {
+        ResponseDto responseDto = responseService.getResponse(responseId);
+        return ResponseEntity.ok(responseDto);
+    }
+
 }
