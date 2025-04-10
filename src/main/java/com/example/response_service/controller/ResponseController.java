@@ -18,9 +18,9 @@ public class ResponseController {
     private final ResponseService responseService;
 
     @PostMapping
-    public ResponseEntity<ResponseDto> createResponse(@RequestBody CreateResponseRequest request) {
-        ResponseDto responseDto = responseService.createResponse(request);
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<Void> createResponse(@RequestBody CreateResponseRequest request) {
+        responseService.createResponse(request);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/survey/{surveyId}")
