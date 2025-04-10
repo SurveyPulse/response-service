@@ -51,6 +51,7 @@ logging:
 feign:
   survey-service-url: http://localhost:8083
   user-service-url: http://localhost:8081
+  report-service-url: http://localhost:8085
 
   client:
     config:

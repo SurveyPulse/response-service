@@ -1,6 +1,7 @@
 package com.example.response_service.service;
 
 import com.example.global.exception.type.NotFoundException;
+import com.example.response_service.client.service.ReportClientService;
 import com.example.response_service.client.service.SurveyClientService;
 import com.example.response_service.client.service.UserClientService;
 import com.example.response_service.dto.client.AggregateRequest;
@@ -34,9 +35,10 @@ public class ResponseService {
     private final AnswerRepository answerRepository;
     private final UserClientService userClientService;
     private final SurveyClientService surveyClientService;
+    private final ReportClientService reportClientService;
 
     @Transactional
-    public AggregateRequest createResponse(CreateResponseRequest request) {
+    public void createResponse(CreateResponseRequest request) {
         log.info("설문 ID [{}]에 대한 응답 생성 시작, 응답자 ID: {}", request.surveyId(), request.respondentUserId());
 
         Response response = Response.builder()
@@ -71,7 +73,7 @@ public class ResponseService {
                 aggregateRequest.surveyId(), aggregateRequest.responseId(),
                 aggregateRequest.userId(), aggregateRequest.answers().size());
 
-        return aggregateRequest;
+        reportClientService.callAnalyzeAndAggregateReport(aggregateRequest);
     }
 
     public List<ResponseDto> getResponsesBySurveyId(Long surveyId) {
