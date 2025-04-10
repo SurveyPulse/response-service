@@ -19,7 +19,6 @@ import com.example.response_service.repository.AnswerRepository;
 import com.example.response_service.repository.ResponseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -36,6 +35,7 @@ public class ResponseService {
     private final UserClientService userClientService;
     private final SurveyClientService surveyClientService;
     private final ReportClientService reportClientService;
+    private final KafkaProducerService kafkaProducerService;
 
     @Transactional
     public void createResponse(CreateResponseRequest request) {
@@ -73,7 +73,8 @@ public class ResponseService {
                 aggregateRequest.surveyId(), aggregateRequest.responseId(),
                 aggregateRequest.userId(), aggregateRequest.answers().size());
 
-        reportClientService.callAnalyzeAndAggregateReport(aggregateRequest);
+        String aggregateTopic = "aggregate-request-topic";
+        kafkaProducerService.sendAggregateRequest(aggregateTopic, aggregateRequest);
     }
 
     public List<ResponseDto> getResponsesBySurveyId(Long surveyId) {

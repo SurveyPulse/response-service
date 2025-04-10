@@ -21,6 +21,11 @@ spring:
     username: root
     password: worldcup7!
     driver-class-name: com.mysql.cj.jdbc.Driver
+  kafka:
+    bootstrap-servers:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
   jpa:
     hibernate:
