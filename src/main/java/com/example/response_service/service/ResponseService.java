@@ -3,6 +3,8 @@ package com.example.response_service.service;
 import com.example.global.exception.type.NotFoundException;
 import com.example.response_service.client.service.SurveyClientService;
 import com.example.response_service.client.service.UserClientService;
+import com.example.response_service.dto.client.AggregateRequest;
+import com.example.response_service.dto.client.QuestionAnswerRequest;
 import com.example.response_service.dto.request.CreateResponseRequest;
 import com.example.response_service.dto.request.UpdateResponseRequest;
 import com.example.response_service.dto.response.QuestionWithSurveyDto;
@@ -34,7 +36,7 @@ public class ResponseService {
     private final SurveyClientService surveyClientService;
 
     @Transactional
-    public void createResponse(CreateResponseRequest request) {
+    public AggregateRequest createResponse(CreateResponseRequest request) {
         log.info("설문 ID [{}]에 대한 응답 생성 시작, 응답자 ID: {}", request.surveyId(), request.respondentUserId());
 
         Response response = Response.builder()
@@ -54,6 +56,22 @@ public class ResponseService {
                                       .toList();
         answerRepository.saveAll(answers);
         log.info("응답 ID [{}]에 대해 {}개의 답변 저장 완료", response.getResponseId(), answers.size());
+
+        List<QuestionAnswerRequest> clientAnswers = answers.stream()
+                                                           .map(answer -> new QuestionAnswerRequest(answer.getQuestionId(), answer.getAnswerContent()))
+                                                           .toList();
+
+        AggregateRequest aggregateRequest = new AggregateRequest(
+                request.surveyId(),
+                response.getResponseId(),
+                request.respondentUserId(),
+                clientAnswers
+        );
+        log.info("AggregateRequest 생성 완료: surveyId={}, responseId={}, userId={}, 답변 수={}",
+                aggregateRequest.surveyId(), aggregateRequest.responseId(),
+                aggregateRequest.userId(), aggregateRequest.answers().size());
+
+        return aggregateRequest;
     }
 
     public List<ResponseDto> getResponsesBySurveyId(Long surveyId) {

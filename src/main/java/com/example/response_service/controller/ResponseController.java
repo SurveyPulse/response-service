@@ -1,5 +1,6 @@
 package com.example.response_service.controller;
 
+import com.example.response_service.dto.client.AggregateRequest;
 import com.example.response_service.dto.request.CreateResponseRequest;
 import com.example.response_service.dto.request.UpdateResponseRequest;
 import com.example.response_service.dto.response.ResponseDto;
@@ -18,9 +19,9 @@ public class ResponseController {
     private final ResponseService responseService;
 
     @PostMapping
-    public ResponseEntity<Void> createResponse(@RequestBody CreateResponseRequest request) {
-        responseService.createResponse(request);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<AggregateRequest> createResponse(@RequestBody CreateResponseRequest request) {
+        AggregateRequest aggregateRequest = responseService.createResponse(request);
+        return ResponseEntity.ok(aggregateRequest);
     }
 
     @GetMapping("/survey/{surveyId}")
