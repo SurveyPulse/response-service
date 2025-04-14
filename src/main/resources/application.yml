@@ -53,11 +53,6 @@ feign:
   user-service-url: http://localhost:8081
   report-service-url: http://localhost:8085
 
-  client:
-    config:
-      default:
-        loggerLevel: FULL
-
 resilience4j.circuitbreaker:
   instances:
     userService:
