@@ -1,7 +1,6 @@
 package com.example.response_service.service;
 
 import com.example.global.exception.type.NotFoundException;
-import com.example.response_service.client.service.ReportClientService;
 import com.example.response_service.client.service.SurveyClientService;
 import com.example.response_service.client.service.UserClientService;
 import com.example.response_service.dto.client.AggregateRequest;
@@ -34,7 +33,6 @@ public class ResponseService {
     private final AnswerRepository answerRepository;
     private final UserClientService userClientService;
     private final SurveyClientService surveyClientService;
-    private final ReportClientService reportClientService;
     private final KafkaProducerService kafkaProducerService;
 
     @Transactional
