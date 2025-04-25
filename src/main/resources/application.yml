@@ -21,11 +21,6 @@ spring:
     username: root
     password: worldcup7!
     driver-class-name: com.mysql.cj.jdbc.Driver
-  kafka:
-    bootstrap-servers:
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
   jpa:
     hibernate:
@@ -58,11 +53,6 @@ feign:
   user-service-url: http://localhost:8081
   report-service-url: http://localhost:8085
 
-  client:
-    config:
-      default:
-        loggerLevel: FULL
-
 resilience4j.circuitbreaker:
   instances:
     userService:
@@ -79,4 +69,3 @@ resilience4j.circuitbreaker:
       permittedNumberOfCallsInHalfOpenState: 3
       failureRateThreshold: 50
       waitDurationInOpenState: 10s
-
