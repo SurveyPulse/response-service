@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,6 +29,9 @@ public class Response extends BaseEntity {
 
     @Column(nullable = false)
     private LocalDateTime submittedAt;
+
+    @OneToMany(mappedBy = "response", fetch = FetchType.LAZY)
+    private List<Answer> answers = new ArrayList<>();
 
     @Builder
     public Response(Long surveyId, Long respondentUserId, LocalDateTime submittedAt) {

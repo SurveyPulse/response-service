@@ -48,12 +48,16 @@ public class ResponseService {
         log.info("응답 생성 완료, 응답 ID: {}", response.getResponseId());
 
         List<Answer> answers = request.answers().stream()
-                                      .map(dto -> Answer.builder()
-                                                        .responseId(response.getResponseId())
-                                                        .questionId(dto.questionId())
-                                                        .answerContent(dto.answerContent())
-                                                        .build())
+                                      .map(dto -> {
+                                          Answer a = Answer.builder()
+                                                           .questionId(dto.questionId())
+                                                           .answerContent(dto.answerContent())
+                                                           .build();
+                                          a.linkResponse(response);
+                                          return a;
+                                      })
                                       .toList();
+
         answerRepository.saveAll(answers);
         log.info("응답 ID [{}]에 대해 {}개의 답변 저장 완료", response.getResponseId(), answers.size());
 
@@ -137,12 +141,16 @@ public class ResponseService {
         log.debug("응답 ID [{}]에 대한 기존 답변 삭제 완료", responseId);
 
         List<Answer> answers = request.answers().stream()
-                                      .map(dto -> Answer.builder()
-                                                        .responseId(response.getResponseId())
-                                                        .questionId(dto.questionId())
-                                                        .answerContent(dto.answerContent())
-                                                        .build())
+                                      .map(dto -> {
+                                          Answer a = Answer.builder()
+                                                           .questionId(dto.questionId())
+                                                           .answerContent(dto.answerContent())
+                                                           .build();
+                                          a.linkResponse(response);
+                                          return a;
+                                      })
                                       .toList();
+
         answerRepository.saveAll(answers);
         log.info("응답 ID [{}]에 대해 {}개의 새로운 답변 저장 완료", response.getResponseId(), answers.size());
 

@@ -6,23 +6,16 @@ server:
       enabled: true
       force: true
 
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-
 spring:
   application:
     name: response-service
   datasource:
-    url: jdbc:mysql://surveypulse-rds.c9s06ug8a482.ap-northeast-2.rds.amazonaws.com:3306/response_service?serverTimezone=UTC
-    username: admin
-    password: asdf2003
+    url:
+    username:
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
   kafka:
-    bootstrap-servers: boot-pgudwjf2.c1.kafka-serverless.ap-northeast-2.amazonaws.com:9098
+    bootstrap-servers:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -34,7 +27,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update  # 첫 배포 시 'create', 그 후에는 'update' 권장
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
@@ -42,7 +35,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
         show_sql: true
-        default_batch_fetch_size: 100
     open-in-view: false
 
   sql:
