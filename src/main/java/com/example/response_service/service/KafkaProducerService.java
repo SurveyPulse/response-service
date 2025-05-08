@@ -19,6 +19,7 @@ public class KafkaProducerService {
     public void sendAggregateRequest(String topic, AggregateRequest aggregateRequest) {
         try {
             String jsonMessage = objectMapper.writeValueAsString(aggregateRequest);
+            log.info("Kafka 메시지 전송 시도 topic={} message={}", topic, jsonMessage);
             kafkaTemplate.send(topic, jsonMessage);
         } catch (JsonProcessingException e) {
             log.error("AggregateRequest 직렬화 실패", e);

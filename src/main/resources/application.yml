@@ -6,6 +6,13 @@ server:
       enabled: true
       force: true
 
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
 spring:
   application:
     name: response-service
@@ -20,9 +27,12 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     properties:
+      linger.ms: 5000
       security.protocol: SASL_SSL
       sasl.mechanism: AWS_MSK_IAM
-      sasl.jaas.config: software.amazon.msk.auth.iam.IAMLoginModule required;
+      sasl.jaas.config: >
+        software.amazon.msk.auth.iam.IAMLoginModule required
+        awsRegion="ap-northeast-2";
       sasl.client.callback.handler.class: software.amazon.msk.auth.iam.IAMClientCallbackHandler
 
   jpa:
@@ -47,8 +57,7 @@ spring:
 
 logging:
   level:
-    com.example.response_service.client: DEBUG
-    feign.Logger: DEBUG
+    root: INFO
 
 feign:
   survey-service-url: http://localhost:8083
@@ -71,3 +80,16 @@ resilience4j.circuitbreaker:
       permittedNumberOfCallsInHalfOpenState: 3
       failureRateThreshold: 50
       waitDurationInOpenState: 10s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true

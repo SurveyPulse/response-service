@@ -60,6 +60,11 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 
+	implementation 'software.amazon.msk:aws-msk-iam-auth:2.3.2'
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
