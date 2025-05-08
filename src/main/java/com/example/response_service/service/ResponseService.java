@@ -1,6 +1,7 @@
 package com.example.response_service.service;
 
 import com.example.global.exception.type.NotFoundException;
+import com.example.response_service.client.service.ReportClientService;
 import com.example.response_service.client.service.SurveyClientService;
 import com.example.response_service.client.service.UserClientService;
 import com.example.response_service.dto.client.AggregateRequest;
@@ -33,7 +34,7 @@ public class ResponseService {
     private final AnswerRepository answerRepository;
     private final UserClientService userClientService;
     private final SurveyClientService surveyClientService;
-    private final KafkaProducerService kafkaProducerService;
+    private final ReportClientService reportClientService;
 
     @Transactional
     public void createResponse(CreateResponseRequest request) {
@@ -75,8 +76,7 @@ public class ResponseService {
                 aggregateRequest.surveyId(), aggregateRequest.responseId(),
                 aggregateRequest.userId(), aggregateRequest.answers().size());
 
-        String aggregateTopic = "aggregate-request-topic";
-        kafkaProducerService.sendAggregateRequest(aggregateTopic, aggregateRequest);
+        reportClientService.callAnalyzeAndAggregateReport(aggregateRequest);
     }
 
     public List<ResponseDto> getResponsesBySurveyId(Long surveyId) {
