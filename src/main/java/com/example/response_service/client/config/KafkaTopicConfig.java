@@ -12,8 +12,8 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic aggregateRequestTopic() {
         return TopicBuilder.name("aggregate-request-topic")
-                           .partitions(3)
-                           .replicas(3)
+                           .partitions(12)
+                           .replicas(2)
                            .build();
     }
 }

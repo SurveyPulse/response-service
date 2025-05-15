@@ -27,7 +27,9 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     properties:
-      linger.ms: 5000
+      batch.size: 65536
+      linger.ms: 50
+      acks: 1
       security.protocol: SASL_SSL
       sasl.mechanism: AWS_MSK_IAM
       sasl.jaas.config: >
