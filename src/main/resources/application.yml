@@ -59,9 +59,9 @@ logging:
     root: INFO
 
 feign:
-  survey-service-url: http://localhost:8083
-  user-service-url: http://localhost:8081
-  report-service-url: http://localhost:8085
+  survey-service-url: http://buildmystudy.com
+  user-service-url: http://buildmystudy.com
+  report-service-url: http://buildmystudy.com
 
 resilience4j.circuitbreaker:
   instances:
