@@ -16,7 +16,7 @@ spec:
     - host: {{ .Values.ingress.host }}
       http:
         paths:
-          - path: /api/reports
+          - path: /api/responses
             pathType: {{ .Values.ingress.pathType }}
             backend:
               service:

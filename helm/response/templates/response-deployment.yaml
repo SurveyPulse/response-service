@@ -15,8 +15,13 @@ spec:
       labels:
         app: "{{ .Values.spring.labels }}"
       annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.spring.service.response.port }}"
+        prometheus.io/path: "/actuator/prometheus"
         rollme: {{ randAlphaNum 5 | quote }}
     spec:
+      nodeSelector:
+        role: app
       containers:
         - name: "{{ .Values.spring.labels }}"
           image: "{{ .Values.spring.image.repository }}:{{ .Values.spring.image.tag }}"
@@ -24,11 +29,11 @@ spec:
             - containerPort: {{ .Values.spring.service.response.port }}
           resources:
             requests:
-              cpu: "600m"
-              memory: "1200Mi"
+              cpu: "400m"    # 0.4 vCPU
+              memory: "800Mi"
             limits:
-              cpu: "1200m"
-              memory: "2400Mi"
+              cpu: "800m"    # 0.8 vCPU
+              memory: "1600Mi"
 
           livenessProbe:
             httpGet:

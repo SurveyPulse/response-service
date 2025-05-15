@@ -17,8 +17,9 @@ public class Answer extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long answerId;
 
-    @Column(nullable = false)
-    private Long responseId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "response_id", nullable = false)
+    private Response response;
 
     @Column(nullable = false)
     private Long questionId;
@@ -27,9 +28,13 @@ public class Answer extends BaseEntity {
     private String answerContent;
 
     @Builder
-    public Answer(Long responseId, Long questionId, String answerContent) {
-        this.responseId = responseId;
+    public Answer(Long questionId, String answerContent) {
         this.questionId = questionId;
         this.answerContent = answerContent;
+    }
+
+    public void linkResponse(Response response) {
+        this.response = response;
+        response.getAnswers().add(this);
     }
 }

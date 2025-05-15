@@ -17,14 +17,26 @@ spring:
   application:
     name: response-service
   datasource:
-    url: jdbc:mysql://localhost:3306/response_service?serverTimezone=UTC
-    username: root
-    password: worldcup7!
+    url:
+    username:
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
+  kafka:
+    bootstrap-servers:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    properties:
+      security.protocol: SASL_SSL
+      sasl.mechanism: AWS_MSK_IAM
+      sasl.jaas.config: >
+        software.amazon.msk.auth.iam.IAMLoginModule required
+        awsRegion="ap-northeast-2";
+      sasl.client.callback.handler.class: software.amazon.msk.auth.iam.IAMClientCallbackHandler
 
   jpa:
     hibernate:
-      ddl-auto: update  # 첫 배포 시 'create', 그 후에는 'update' 권장
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
@@ -32,7 +44,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
         show_sql: true
-        default_batch_fetch_size: 100
     open-in-view: false
 
   sql:
@@ -45,13 +56,12 @@ spring:
 
 logging:
   level:
-    com.example.response_service.client: DEBUG
-    feign.Logger: DEBUG
+    root: INFO
 
 feign:
-  survey-service-url: http://localhost:8083
-  user-service-url: http://localhost:8081
-  report-service-url: http://localhost:8085
+  survey-service-url: http://buildmystudy.com
+  user-service-url: http://buildmystudy.com
+  report-service-url: http://buildmystudy.com
 
 resilience4j.circuitbreaker:
   instances:
@@ -70,3 +80,15 @@ resilience4j.circuitbreaker:
       failureRateThreshold: 50
       waitDurationInOpenState: 10s
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
