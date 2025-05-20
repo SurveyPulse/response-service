@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -19,7 +21,20 @@ public class UserClientService {
         return userClient.getUserDto(userId);
     }
 
+    @CircuitBreaker(name = "userService", fallbackMethod = "fallbackGetRespondentUsersByIds")
+    public List<RespondentUserDto> getRespondentUsersByIds(List<Long> userIds) {
+        return userClient.getRespondentUsersByIds(userIds);
+    }
+
     public RespondentUserDto fallbackGetUserDto(Long userId, Throwable throwable) {
+        log.warn("[fallbackGetUserDto] userId={} fallback: {}", userId, throwable.toString());
         return new RespondentUserDto(userId, "Unknown User", "Unknown Role");
+    }
+
+    public List<RespondentUserDto> fallbackGetRespondentUsersByIds(List<Long> userIds, Throwable throwable) {
+        log.warn("[fallbackGetRespondentUsersByIds] userIds={} fallback: {}", userIds, throwable.toString());
+        return userIds.stream()
+                      .map(id -> new RespondentUserDto(id, "Unknown User", "Unknown Role"))
+                      .toList();
     }
 }

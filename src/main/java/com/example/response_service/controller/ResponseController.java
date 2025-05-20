@@ -24,8 +24,8 @@ public class ResponseController {
     }
 
     @GetMapping("/survey/{surveyId}")
-    public ResponseEntity<List<ResponseDto>> getResponsesBySurveyId(@PathVariable Long surveyId) {
-        List<ResponseDto> responses = responseService.getResponsesBySurveyId(surveyId);
+    public ResponseEntity<List<ResponseDto>> getResponsesBySurveyId(@PathVariable Long surveyId, @RequestParam(defaultValue = "0") int page) {
+        List<ResponseDto> responses = responseService.getResponsesBySurvey(surveyId, page);
         return ResponseEntity.ok(responses);
     }
 

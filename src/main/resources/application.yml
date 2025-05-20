@@ -21,6 +21,12 @@ spring:
     username:
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 200
+      minimum-idle: 50
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
   kafka:
     bootstrap-servers:
     producer:

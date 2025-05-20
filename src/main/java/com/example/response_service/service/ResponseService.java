@@ -19,10 +19,16 @@ import com.example.response_service.repository.AnswerRepository;
 import com.example.response_service.repository.ResponseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -79,31 +85,47 @@ public class ResponseService {
         reportClientService.callAnalyzeAndAggregateReport(aggregateRequest);
     }
 
-    public List<ResponseDto> getResponsesBySurveyId(Long surveyId) {
-        log.info("설문 ID [{}]의 응답 목록 조회 시작", surveyId);
-        List<Response> responses = responseRepository.findBySurveyId(surveyId);
-        if (responses.isEmpty()) {
-            log.warn("설문 ID [{}]에 해당하는 응답이 존재하지 않습니다", surveyId);
-            throw new NotFoundException(ResponseExceptionType.RESPONSE_NOT_FOUND);
+    @Transactional(readOnly = true)
+    public List<ResponseDto> getResponsesBySurvey(Long surveyId, int pageNumber) {
+        // 1) 응답 ID 페이징 조회
+        Page<Long> responseIdPage = responseRepository.findIdsBySurveyId(surveyId, PageRequest.of(pageNumber, 20, Sort.by("responseId")));
+        List<Long> responseIds = responseIdPage.getContent();
+        if (responseIds.isEmpty()) {
+            return List.of();
         }
-        List<ResponseDto> responseDtos = responses.stream().map(response -> {
-            List<Answer> answers = answerRepository.findByResponseId(response.getResponseId());
-            if (answers.isEmpty()) {
-                log.warn("응답 ID [{}]에 대해 답변이 존재하지 않습니다", response.getResponseId());
-                throw new NotFoundException(AnswerExceptionType.ANSWER_NOT_FOUND);
-            }
 
-            RespondentUserDto respondentUserDto = userClientService.getUserDto(response.getRespondentUserId());
-            List<QuestionWithSurveyDto> questionDtos = surveyClientService.getQuestionDtos(response.getSurveyId());
+        // 2) Response 엔티티 일괄 조회
+        List<Response> responses = responseRepository.findAllById(responseIds);
 
-            ResponseDto dto = ResponseDto.from(response, answers, respondentUserDto, questionDtos);
-            log.debug("응답 ID [{}]에 대한 ResponseDto 생성 완료", response.getResponseId());
-            return dto;
-        }).toList();
-        log.info("설문 ID [{}]에 대해 {}건의 응답 반환", surveyId, responseDtos.size());
-        return responseDtos;
+        // 3) Answer 일괄 조회 및 그룹핑
+        List<Answer> allAnswers = answerRepository.findAllByResponseIds(responseIds);
+        Map<Long, List<Answer>> answersByResponseId = allAnswers.stream()
+                                                                .collect(Collectors.groupingBy(answer -> answer.getResponse().getResponseId()));
+
+        // 4) RespondentUserDto 일괄 조회 및 맵핑
+        List<Long> respondentUserIds = responses.stream()
+                                                .map(Response::getRespondentUserId)
+                                                .distinct()
+                                                .toList();
+        List<RespondentUserDto> respondentUserDtos = userClientService.getRespondentUsersByIds(respondentUserIds);
+        Map<Long, RespondentUserDto> userDtoById = respondentUserDtos.stream()
+                                                                     .collect(Collectors.toMap(RespondentUserDto::userId, dto -> dto));
+
+        // 5) QuestionWithSurveyDto 조회 (설문 전체 공통)
+        List<QuestionWithSurveyDto> questionDtos = surveyClientService.getQuestionDtos(surveyId);
+
+        // 6) 최종 ResponseDto 매핑
+        return responses.stream()
+                        .map(response -> ResponseDto.from(
+                                response,
+                                answersByResponseId.getOrDefault(response.getResponseId(), List.of()),
+                                userDtoById.get(response.getRespondentUserId()),
+                                questionDtos
+                        ))
+                        .toList();
     }
 
+    @Transactional(readOnly = true)
     public ResponseDto getResponse(Long responseId) {
         log.info("응답 ID [{}] 단건 조회 시작", responseId);
         Response response = responseRepository.findById(responseId)
