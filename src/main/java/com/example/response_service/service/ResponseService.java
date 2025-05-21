@@ -87,22 +87,18 @@ public class ResponseService {
 
     @Transactional(readOnly = true)
     public List<ResponseDto> getResponsesBySurvey(Long surveyId, int pageNumber) {
-        // 1) 응답 ID 페이징 조회
         Page<Long> responseIdPage = responseRepository.findIdsBySurveyId(surveyId, PageRequest.of(pageNumber, 20, Sort.by("responseId")));
         List<Long> responseIds = responseIdPage.getContent();
         if (responseIds.isEmpty()) {
             return List.of();
         }
 
-        // 2) Response 엔티티 일괄 조회
         List<Response> responses = responseRepository.findAllById(responseIds);
 
-        // 3) Answer 일괄 조회 및 그룹핑
         List<Answer> allAnswers = answerRepository.findAllByResponseIds(responseIds);
         Map<Long, List<Answer>> answersByResponseId = allAnswers.stream()
                                                                 .collect(Collectors.groupingBy(answer -> answer.getResponse().getResponseId()));
 
-        // 4) RespondentUserDto 일괄 조회 및 맵핑
         List<Long> respondentUserIds = responses.stream()
                                                 .map(Response::getRespondentUserId)
                                                 .distinct()
@@ -111,10 +107,8 @@ public class ResponseService {
         Map<Long, RespondentUserDto> userDtoById = respondentUserDtos.stream()
                                                                      .collect(Collectors.toMap(RespondentUserDto::userId, dto -> dto));
 
-        // 5) QuestionWithSurveyDto 조회 (설문 전체 공통)
         List<QuestionWithSurveyDto> questionDtos = surveyClientService.getQuestionDtos(surveyId);
 
-        // 6) 최종 ResponseDto 매핑
         return responses.stream()
                         .map(response -> ResponseDto.from(
                                 response,
