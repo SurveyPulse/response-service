@@ -1,4 +1,3 @@
-````markdown
 # MSA 기반 SurveyPulse 응답 서비스
 
 SurveyPulse 플랫폼의 설문 응답(Response) 관리를 담당하는 마이크로서비스입니다. 응답 생성, 조회, 수정, 삭제 및 집계 연동 기능을 제공합니다.
@@ -43,3 +42,11 @@ SurveyPulse 플랫폼의 설문 응답(Response) 관리를 담당하는 마이�
 - **컨테이너 & 오케스트레이션**: Docker, Kubernetes, Helm, AWS EKS
 - **아키텍처**: 마이크로서비스 아키텍처(MSA)
 
+## 아키텍처
+
+![서비스 아키텍처 다이어그램](https://github.com/SurveyPulse/user-service/blob/main/docs/images/aws-architecture.png)
+![RDS 아키텍처 다이어그램](https://github.com/SurveyPulse/user-service/blob/main/docs/images/aws-rds-architecture.png)
+
+
+## CI/CD 아키텍처
+![CI/CD 파이프라인 다이어그램](https://github.com/SurveyPulse/user-service/blob/main/docs/images/cicd-architecture.png)
