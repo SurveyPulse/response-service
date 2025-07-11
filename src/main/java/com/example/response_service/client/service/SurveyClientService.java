@@ -3,6 +3,8 @@ package com.example.response_service.client.service;
 import com.example.response_service.client.SurveyClient;
 import com.example.response_service.dto.response.QuestionWithSurveyDto;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ public class SurveyClientService {
     private final SurveyClient surveyClient;
 
     @CircuitBreaker(name = "surveyService", fallbackMethod = "fallbackGetQuestionDtos")
+    @Retry(name = "surveyService", fallbackMethod = "fallbackGetQuestionDtos")
+    @TimeLimiter(name = "surveyService")
     public List<QuestionWithSurveyDto> getQuestionDtos(Long surveyId) {
         return surveyClient.getQuestionDtos(surveyId);
     }

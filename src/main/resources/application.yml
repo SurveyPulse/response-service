@@ -69,22 +69,48 @@ feign:
   user-service-url: http://buildmystudy.com
   report-service-url: http://buildmystudy.com
 
-resilience4j.circuitbreaker:
-  instances:
-    userService:
-      registerHealthIndicator: true
-      slidingWindowSize: 10
-      minimumNumberOfCalls: 5
-      permittedNumberOfCallsInHalfOpenState: 3
-      failureRateThreshold: 50
-      waitDurationInOpenState: 10s
-    surveyService:
-      registerHealthIndicator: true
-      slidingWindowSize: 10
-      minimumNumberOfCalls: 5
-      permittedNumberOfCallsInHalfOpenState: 3
-      failureRateThreshold: 50
-      waitDurationInOpenState: 10s
+resilience4j:
+  circuitbreaker:
+    instances:
+      userService:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+      surveyService:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+      reportService:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+
+  retry:
+    instances:
+      userService:
+        maxAttempts: 3
+        waitDuration: 1s
+      surveyService:
+        maxAttempts: 3
+        waitDuration: 1s
+      reportService:
+        maxAttempts: 3
+        waitDuration: 1s
+
+  timelimiter:
+    instances:
+      userService:
+        timeoutDuration: 2s
+      surveyService:
+        timeoutDuration: 2s
+      reportService:
+        timeoutDuration: 2s
 
 management:
   endpoints:
