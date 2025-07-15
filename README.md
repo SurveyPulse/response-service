@@ -32,10 +32,7 @@ SurveyPulse 플랫폼의 설문 응답(Response) 관리를 담당하는 마이�
 - **언어 & 프레임워크**: Java, Spring Boot
 - **데이터베이스**: Spring Data JPA, MySQL (AWS RDS)
 - **HTTP 클라이언트**: OpenFeign
-- **회로 차단기 & 복원력**: Resilience4j
-- **외부 연동**:
-  - User, Survey, Report 서비스 간 Feign 통신
-  - JWT 기반 인증 토큰 전파
+- **회로 차단기**: Resilience4j
 - **보안**: Spring Security, JWT
 - **로깅 & 모니터링**: Elasticsearch, Logstash, Kibana (ELK), Prometheus, Grafana
 - **CI/CD**: GitHub Actions
