@@ -30,13 +30,13 @@ SurveyPulse 플랫폼의 설문 응답(Response) 관리를 담당하는 마이�
 ## 기술 스펙
 
 - **언어 & 프레임워크**: Java, Spring Boot
-- **데이터베이스**: Spring Data JPA, MySQL (AWS RDS)
+- **데이터베이스**: Spring Data JPA, MySQL(AWS RDS)
 - **HTTP 클라이언트**: OpenFeign
 - **회로 차단기**: Resilience4j
 - **보안**: Spring Security, JWT
 - **로깅 & 모니터링**: Elasticsearch, Logstash, Kibana (ELK), Prometheus, Grafana
 - **CI/CD**: GitHub Actions
-- **컨테이너 & 오케스트레이션**: Docker, Kubernetes, Helm, AWS EKS
+- **컨테이너 & 오케스트레이션**: Docker, Kubernetes(AWS EKS), Helm
 - **아키텍처**: 마이크로서비스 아키텍처(MSA)
 
 ## 아키텍처
