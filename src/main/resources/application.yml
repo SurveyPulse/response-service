@@ -113,6 +113,9 @@ resilience4j:
         timeoutDuration: 2s
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0
   endpoints:
     web:
       exposure:
