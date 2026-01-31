@@ -1,5 +1,6 @@
 server:
   port: 8084
+  shutdown: graceful
   servlet:
     encoding:
       charset: UTF-8
@@ -8,8 +9,9 @@ server:
 
 eureka:
   client:
-    register-with-eureka: true
-    fetch-registry: true
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
     service-url:
       defaultZone: http://localhost:8761/eureka
 
@@ -39,6 +41,8 @@ spring:
         software.amazon.msk.auth.iam.IAMLoginModule required
         awsRegion="ap-northeast-2";
       sasl.client.callback.handler.class: software.amazon.msk.auth.iam.IAMClientCallbackHandler
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
 
   jpa:
     hibernate:
@@ -65,9 +69,14 @@ logging:
     root: INFO
 
 feign:
-  survey-service-url: http://buildmystudy.com
-  user-service-url: http://buildmystudy.com
-  report-service-url: http://buildmystudy.com
+  survey-service-url: http://survey-service
+  user-service-url: http://user-service
+  report-service-url: http://report-service
+  client:
+    config:
+      default:
+        connectTimeout: 2000
+        readTimeout: 2000
 
 resilience4j:
   circuitbreaker:
@@ -102,15 +111,6 @@ resilience4j:
       reportService:
         maxAttempts: 3
         waitDuration: 1s
-
-  timelimiter:
-    instances:
-      userService:
-        timeoutDuration: 2s
-      surveyService:
-        timeoutDuration: 2s
-      reportService:
-        timeoutDuration: 2s
 
 management:
   tracing:

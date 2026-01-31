@@ -4,7 +4,6 @@ import com.example.response_service.client.ReportClient;
 import com.example.response_service.dto.client.AggregateRequest;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,9 +15,8 @@ public class ReportClientService {
 
     private final ReportClient reportClient;
 
-    @CircuitBreaker(name = "report-service", fallbackMethod = "fallbackCallAnalyzeAndAggregateReport")
+    @CircuitBreaker(name = "reportService", fallbackMethod = "fallbackCallAnalyzeAndAggregateReport")
     @Retry(name = "reportService", fallbackMethod = "fallbackCallAnalyzeAndAggregateReport")
-    @TimeLimiter(name = "reportService")
     public void callAnalyzeAndAggregateReport(AggregateRequest aggregateRequest) {
         reportClient.callAnalyzeAndAggregateReport(aggregateRequest);
     }
