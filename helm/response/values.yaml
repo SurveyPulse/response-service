@@ -19,6 +19,8 @@ spring:
     url: ""
     username: ""
     password: ""
+  kafka:
+    bootstrapServers: ""
 
 autoscaling:
   enabled: true
