@@ -45,7 +45,7 @@ autoscaling:
 
   behavior:
     scaleUp:
-      stabilizationWindowSeconds: 120
+      stabilizationWindowSeconds: 0
       policies:
         - type: Percent
           value: 100
