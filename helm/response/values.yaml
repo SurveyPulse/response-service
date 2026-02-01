@@ -13,7 +13,6 @@ spring:
   service:
     port: 80
     response:
-      name: response-service
       port: 8084
   datasource:
     url: ""
